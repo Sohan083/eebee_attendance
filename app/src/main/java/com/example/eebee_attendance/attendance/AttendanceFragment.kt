@@ -24,15 +24,17 @@ import com.example.eebee_attendance.MainActivity.Companion.presentAcc
 import com.example.eebee_attendance.MainActivity.Companion.presentLat
 import com.example.eebee_attendance.MainActivity.Companion.presentLon
 import com.example.eebee_attendance.R
+import com.example.eebee_attendance.attendance.attendanceresponse.AttendanceStatusResponseBody
 import com.example.eebee_attendance.databinding.FragmentAttendanceBinding
 import com.example.eebee_attendance.model.User
 import com.example.eebee_attendance.model.User.Companion.user
-import com.example.eebee_attendance.attendance.attendanceresponse.AttendanceStatusResponseBody
 import com.example.eebee_attendance.utils.CustomUtility
 import com.example.eebee_attendance.utils.CustomUtility.deleteFile
 import com.example.eebee_attendance.utils.GPSLocation
 import com.example.eebee_attendance.utils.MySingleton
 import com.example.eebee_attendance.utils.StaticTags
+import com.example.eebee_attendance.versioncheck.VersionCheckApiInterface
+import com.example.eebee_attendance.versioncheck.VersionCheckApiResponse
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -88,7 +90,7 @@ class AttendanceFragment : Fragment() {
 
         })
 
-        getAttendance()
+        versionCheck()
 
         binding.inbtn.setOnClickListener(View.OnClickListener {
             activeBtn = "in"
@@ -362,6 +364,63 @@ class AttendanceFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<AttendanceStatusResponseBody>?, t: Throwable?) {
+                pDialog?.dismiss()
+                Log.e("res", t.toString())
+                CustomUtility.showError(
+                    requireContext(),
+                    "Network Error, try again!",
+                    "Failed"
+                )
+            }
+        })
+
+    }
+
+    private fun versionCheck() {
+
+        pDialog = SweetAlertDialog(requireContext(), SweetAlertDialog.PROGRESS_TYPE)
+        pDialog!!.progressHelper.barColor = Color.parseColor("#08839b")
+        pDialog!!.titleText = "Loading"
+        pDialog!!.setCancelable(false)
+        pDialog!!.show()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(StaticTags.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(VersionCheckApiInterface::class.java)
+        val call = service.checkVersion(user!!.userId!!, getString(R.string.version), "attn")
+
+        call.enqueue(object : Callback<VersionCheckApiResponse> {
+            override fun onResponse(
+                call: Call<VersionCheckApiResponse>?,
+                response: retrofit2.Response<VersionCheckApiResponse>?
+            ) {
+                pDialog?.dismiss()
+                Log.d("response", response?.body().toString())
+                if (response != null) {
+                    if (response.code() == 200) {
+                        val versionCheckApiResponse = response.body()!!
+                        if (versionCheckApiResponse.success) {
+                            pDialog = SweetAlertDialog(requireContext(),SweetAlertDialog.WARNING_TYPE)
+                            pDialog!!.titleText = "New version found"
+                            pDialog!!.setCancelable(false)
+                            pDialog!!.setConfirmButton("Ok", SweetAlertDialog.OnSweetClickListener {
+                                pDialog!!.dismissWithAnimation()
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(versionCheckApiResponse.appInfo.app_location_url))
+                                startActivity(browserIntent)
+                            })
+                            pDialog!!.show()
+                        }
+                        else
+                        {
+                            getAttendance()
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<VersionCheckApiResponse>?, t: Throwable?) {
                 pDialog?.dismiss()
                 Log.e("res", t.toString())
                 CustomUtility.showError(

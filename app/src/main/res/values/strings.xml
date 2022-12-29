@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">eeBee Attendance</string>
+    <string name="app_name">EB Attendance</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_pos_registration">Outlet Registration</string>
@@ -8,7 +8,7 @@
     <string name="menu_attendance">Attendance</string>
     <string name="take_image_done">Image Captured</string>
 
-    <string name="version">1.0</string>
+    <string name="version">1.1</string>
     <string name="credit">©Interspeed Data Science Lab</string>
 
 
