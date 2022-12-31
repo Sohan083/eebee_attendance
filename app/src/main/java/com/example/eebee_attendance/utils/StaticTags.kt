@@ -11,9 +11,10 @@ class StaticTags {
         val LOCATION_REQUEST: Int = 100
         const val IMAGE_CAPTURE_CODE: Int = 1
         //var BASE_URL = "https://parkrd.atmdbd.com/api/"
-        //var BASE_URL = "https://demo.parkrd.atmdbd.com/api/"
-        var BASE_URL = "https://demo.parkrd.br-isgalleon.com/api/"
-        var isBeta = true
+        var BASE_URL = "https://ebroaster.com/api/"
+        //var BASE_URL = "https://demo.parkrd.br-isgalleon.com/api/"
+
+        var isBeta = false
         const val timeFormat = "HH:mm"
         val dateFormat = "yyyy-MM-dd"
         val dateFormatShow = "dd-MM-yyyy"
