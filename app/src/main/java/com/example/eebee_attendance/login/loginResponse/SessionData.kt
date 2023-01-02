@@ -4,7 +4,7 @@ data class SessionData(
     val district_id: String,
     val district_name: String,
     val employee_id: String,
-    val employee_position_id: String,
+    val employee_position_id: String?,
     val full_name: String,
     val picture_name: String,
     val user_id: String,

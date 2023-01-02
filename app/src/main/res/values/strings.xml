@@ -13,5 +13,6 @@
 
 
     <string name="checkIn_warning">\"Check In\" means you are currently present at the outlet. Please be sure you are at the right place and write the reason why you are here.</string>
+    <string name="user_type">EB Attendance</string>
 
 </resources>

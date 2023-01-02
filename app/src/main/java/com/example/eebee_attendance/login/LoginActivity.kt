@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.example.eebee_attendance.MainActivity
+import com.example.eebee_attendance.R
 
 import com.example.eebee_attendance.databinding.ActivityLoginBinding
 import com.example.eebee_attendance.model.User
@@ -53,7 +54,7 @@ open class LoginActivity : AppCompatActivity() {
 
         checkPermission()
 
-        //binding.textUserType.text = getString(R.string.user_type)
+        binding.textUserType.text = getString(R.string.user_type)
 
         ObjectAnimator.ofFloat(binding.logoLayout, "translationY", -200f).apply {
             duration = 1000
@@ -164,18 +165,25 @@ open class LoginActivity : AppCompatActivity() {
                         val userData = loginResponseBody.sessionData
                         if(loginResponseBody.success)
                         {
-                            sharedPreferences = getSharedPreferences("user", MODE_PRIVATE)
-                            val editor: SharedPreferences.Editor = sharedPreferences!!.edit()
-                            user?.setName(editor,"name", userData.full_name)
-                            user?.setUserName(editor,"userName", userData.user_name)
-                            user?.setUserId(editor, "id",userData.user_id)
-                            user?.setEmployeeId(editor,"employeeId", userData.employee_id)
-                            user?.setCityToSf(editor, "cityName",userData.district_name)
-                            user?.setZoneToSf(editor, "zoneName",userData.zone_name)
-                            user?.setZoneId(editor, "zoneId",userData.zone_id)
-                            //user?.setTeamName(editor,"team", userData.team_name)
-                            startActivity(Intent(applicationContext, MainActivity::class.java))
-                            finish()
+                            if(userData.employee_position_id != null)
+                            {
+                                sharedPreferences = getSharedPreferences("user", MODE_PRIVATE)
+                                val editor: SharedPreferences.Editor = sharedPreferences!!.edit()
+                                user?.setName(editor,"name", userData.full_name)
+                                user?.setUserName(editor,"userName", userData.user_name)
+                                user?.setUserId(editor, "id",userData.user_id)
+                                user?.setEmployeeId(editor,"employeeId", userData.employee_id)
+                                user?.setCityToSf(editor, "cityName",userData.district_name)
+                                user?.setZoneToSf(editor, "zoneName",userData.zone_name)
+                                user?.setZoneId(editor, "zoneId",userData.zone_id)
+                                startActivity(Intent(applicationContext, MainActivity::class.java))
+                                finish()
+                            }
+                            else
+                            {
+                                CustomUtility.showError(this@LoginActivity,"Employee not positioned", "Failed")
+                            }
+
                         }
                         else
                         {
