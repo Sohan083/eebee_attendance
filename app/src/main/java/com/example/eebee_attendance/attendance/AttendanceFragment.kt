@@ -341,7 +341,7 @@ class AttendanceFragment : Fragment() {
                 response: retrofit2.Response<AttendanceStatusResponseBody>?
             ) {
                 pDialog?.dismiss()
-                Log.d("response", response?.body().toString())
+
                 if (response != null) {
                     if (response.code() == 200) {
                         val attendanceStatusResponseBody = response.body()!!
